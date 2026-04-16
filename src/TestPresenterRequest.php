@@ -136,7 +136,7 @@ class TestPresenterRequest
 	 * @param string|NULL $componentClass required for a secured signal
 	 * @return TestPresenterRequest
 	 */
-	public function withSignal(string $signal, array $componentParameters = [], string $componentClass = null): TestPresenterRequest
+	public function withSignal(string $signal, array $componentParameters = [], ?string $componentClass = null): TestPresenterRequest
 	{
 		assert(!isset($this->parameters['do']));
 		$request = clone $this;
@@ -248,7 +248,7 @@ class TestPresenterRequest
 	}
 
 
-	public function withIdentity(IIdentity $identity = null): TestPresenterRequest
+	public function withIdentity(?IIdentity $identity = null): TestPresenterRequest
 	{
 		$request = clone $this;
 		$request->shouldHaveIdentity = true;

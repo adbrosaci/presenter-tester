@@ -57,7 +57,7 @@ class PresenterTester
 		IRequest $httpRequest,
 		User $user,
 		array $listeners = [],
-		callable $identityFactory = null
+		?callable $identityFactory = null
 	)
 	{
 		$this->session = $session;

@@ -86,7 +86,7 @@ Add form submission data to request. You have to specify full component tree pat
 
 Presenter Tester supports forms with CSRF protection, but since it uses session, it is recommended to install [mangoweb/tester-http-mocks](https://github.com/mangoweb-backend/tester-http-mocks) package.
 
-### `withSignal(string $signal, array $componentParameters = [], string $componentClass = null)`
+### `withSignal(string $signal, array $componentParameters = [], ?string $componentClass = null)`
 With Presenter Tester, you can also easily test signal method. The componentClass is only required in the case you are using `nextras/secured-links` (which you should). It is also recommended to install [mangoweb/tester-http-mocks](https://github.com/mangoweb-backend/tester-http-mocks) package.
 
 ### `withAjax`

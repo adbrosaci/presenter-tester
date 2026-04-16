@@ -127,7 +127,7 @@ class TestPresenterResult
 	}
 
 
-	public function assertHasResponse(string $type = null): self
+	public function assertHasResponse(?string $type = null): self
 	{
 		$this->responseInspected = true;
 		Assert::type($type ?? IResponse::class, $this->response);
@@ -266,7 +266,7 @@ class TestPresenterResult
 	}
 
 
-	public function assertBadRequest(int $code = null, string $messagePattern = null): self
+	public function assertBadRequest(?int $code = null, ?string $messagePattern = null): self
 	{
 		$this->responseInspected = true;
 		Assert::type(BadRequestException::class, $this->badRequestException);
