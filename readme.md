@@ -1,19 +1,31 @@
-Mango Presenter Tester
+Presenter Tester
 ======
-[![Build Status](https://travis-ci.org/mangoweb-backend/presenter-tester.svg?branch=master)](https://travis-ci.org/mangoweb-backend/presenter-tester)
 
 Testing tool for Nette presenter with easy to use API.
+
+Fork of `mangoweb/presenter-tester` maintained by Adbros.
 
 Installation
 ----
 
-The recommended way to install is via Composer:
+Requires PHP 8.1 or higher.
+
+Presenter Tester depends on `mangoweb/tester-http-mocks` `^0.5`. Versions `^0.4` and newer are only released from the [Adbros fork](https://github.com/adbrosaci/tester-http-mocks) and are not on Packagist, so first add the fork as a VCS repository in your project's root `composer.json`:
+
+```json
+"repositories": [
+    {
+        "type": "vcs",
+        "url": "https://github.com/adbrosaci/tester-http-mocks"
+    }
+]
+```
+
+Then install via Composer:
 
 ```
 composer require mangoweb/presenter-tester
 ```
-
-It requires PHP version 7.1.
 
 Integration & configuration
 -----
@@ -84,10 +96,10 @@ Set application request parameters.
 ### `withForm(string $formName, array $post, array $files)`
 Add form submission data to request. You have to specify full component tree path to in `$formName`. 
 
-Presenter Tester supports forms with CSRF protection, but since it uses session, it is recommended to install [mangoweb/tester-http-mocks](https://github.com/mangoweb-backend/tester-http-mocks) package.
+Presenter Tester supports forms with CSRF protection. It uses [mangoweb/tester-http-mocks](https://github.com/adbrosaci/tester-http-mocks) for mock session/HTTP request handling; this is pulled in automatically as a required dependency.
 
 ### `withSignal(string $signal, array $componentParameters = [], ?string $componentClass = null)`
-With Presenter Tester, you can also easily test signal method. The componentClass is only required in the case you are using `nextras/secured-links` (which you should). It is also recommended to install [mangoweb/tester-http-mocks](https://github.com/mangoweb-backend/tester-http-mocks) package.
+With Presenter Tester, you can also easily test signal method. The componentClass is only required in the case you are using `nextras/secured-links` (which you should).
 
 ### `withAjax`
 (Not only) signals often uses AJAX, which you can enable using this method.
