@@ -2,14 +2,13 @@
 
 namespace Mangoweb\Tester\PresenterTester;
 
+use Mangoweb\Tester\HttpMocks\HttpRequest;
 use Nette\Application\BadRequestException;
 use Nette\Application\IPresenter;
 use Nette\Application\IPresenterFactory;
 use Nette\Application\IRouter;
 use Nette\Application\Request as AppRequest;
 use Nette\Application\UI\Presenter;
-use Nette\Http\IRequest;
-use Nette\Http\Request;
 use Nette\Http\Session;
 use Nette\Http\UrlScript;
 use Nette\Security\User;
@@ -27,7 +26,7 @@ class PresenterTester
 	/** @var IRouter */
 	private $router;
 
-	/** @var Request */
+	/** @var HttpRequest */
 	private $httpRequest;
 
 	/** @var string */
@@ -54,7 +53,7 @@ class PresenterTester
 		Session $session,
 		IPresenterFactory $presenterFactory,
 		IRouter $router,
-		IRequest $httpRequest,
+		HttpRequest $httpRequest,
 		User $user,
 		array $listeners = [],
 		?callable $identityFactory = null
@@ -64,7 +63,6 @@ class PresenterTester
 
 		$this->presenterFactory = $presenterFactory;
 		$this->router = $router;
-		assert($httpRequest instanceof Request);
 		$this->httpRequest = $httpRequest;
 		$this->baseUrl = $baseUrl;
 		$this->user = $user;
@@ -143,9 +141,18 @@ class PresenterTester
 
 	protected function createApplicationRequest(TestPresenterRequest $testRequest): AppRequest
 	{
+		$methodName = $testRequest->getMethodName();
+		if ($testRequest->getPost() !== []) {
+			$method = 'POST';
+		} elseif ($methodName === 'GET' && $testRequest->getRawBody() !== null) {
+			$method = 'POST';
+		} else {
+			$method = $methodName;
+		}
+
 		return new AppRequest(
 			$testRequest->getPresenterName(),
-			$testRequest->getPost() ? 'POST' : $testRequest->getMethodName(),
+			$method,
 			$testRequest->getParameters(),
 			$testRequest->getPost(),
 			$testRequest->getFiles()
@@ -173,22 +180,22 @@ class PresenterTester
 	{
 		$appRequest = $this->createApplicationRequest($request);
 		$refUrl = new UrlScript($this->baseUrl, '/');
-
 		$url = new UrlScript($this->router->constructUrl($appRequest->toArray(), $refUrl), '/');
 
-		\Closure::bind(function () use ($request, $url) {
-			/** @var Request $this */
-			$this->headers = $request->getHeaders() + $this->headers;
-			if ($request->isAjax()) {
-				$this->headers['x-requested-with'] = 'XMLHttpRequest';
-			} else {
-				unset($this->headers['x-requested-with']);
-			}
-			$this->post = $request->getPost();
-			$this->url = $url;
-			$this->method = ($request->getPost() || $request->getRawBody()) ? 'POST' : 'GET';
-			$this->rawBodyCallback = [$request, 'getRawBody'];
-		}, $this->httpRequest, Request::class)->__invoke();
+		foreach ($request->getHeaders() as $name => $value) {
+			$this->httpRequest->setHeader($name, $value);
+		}
+
+		if ($request->isAjax()) {
+			$this->httpRequest->setHeader('x-requested-with', 'XMLHttpRequest');
+		} else {
+			$this->httpRequest->removeHeader('x-requested-with');
+		}
+
+		$this->httpRequest->setPost($request->getPost());
+		$this->httpRequest->setUrl($url);
+		$this->httpRequest->setMethod($appRequest->getMethod());
+		$this->httpRequest->setRawBodyCallback([$request, 'getRawBody']);
 	}
 
 

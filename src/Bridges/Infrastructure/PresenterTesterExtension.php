@@ -2,6 +2,7 @@
 
 namespace Mangoweb\Tester\PresenterTester\Bridges\Infrastructure;
 
+use Mangoweb\Tester\HttpMocks\HttpRequest;
 use Mangoweb\Tester\Infrastructure\MangoTesterExtension;
 use Mangoweb\Tester\PresenterTester\IPresenterTesterListener;
 use Mangoweb\Tester\PresenterTester\PresenterTester;
@@ -11,7 +12,6 @@ use Nette\Application\IRouter;
 use Nette\DI\CompilerExtension;
 use Nette\DI\Definitions\ServiceDefinition;
 use Nette\DI\Definitions\Statement;
-use Nette\Http\IRequest;
 use Nette\Http\Session;
 use Nette\Security\User;
 
@@ -42,7 +42,7 @@ class PresenterTesterExtension extends CompilerExtension
 		$this->requireService(IPresenterFactory::class);
 		$this->requireService(User::class);
 		$this->requireService(IRouter::class);
-		$this->requireService(IRequest::class);
+		$this->requireService(HttpRequest::class);
 		$this->requireService(Session::class);
 		$this->requireService(Application::class);
 	}
